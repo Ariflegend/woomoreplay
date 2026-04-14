@@ -1,15 +1,15 @@
 :root {
-  --aside-width: 400px;
+  --aside-width: min(420px, 100vw);
   --cart-aside-summary-height-with-discount: 300px;
   --cart-aside-summary-height: 250px;
-  --grid-item-width: 355px;
-  --header-height: 64px;
-  --color-dark: #000;
+  --grid-item-width: min(320px, 100%);
+  --header-height: 4rem;
+  --color-dark: #1c1917;
   --color-light: #fff;
 }
 
 img {
-  border-radius: 4px;
+  border-radius: var(--radius-lg, 0.75rem);
 }
 
 /*
@@ -85,27 +85,32 @@ img {
 }
 
 aside {
-  background: var(--color-light);
-  box-shadow: 0 0 50px rgba(0, 0, 0, 0.3);
+  background: var(--color-surface, #fff);
+  box-shadow: var(--shadow-lg, -8px 0 40px oklch(0 0 0 / 0.12));
   height: 100vh;
   width: min(var(--aside-width), 100vw);
   position: fixed;
   right: calc(-1 * var(--aside-width));
   top: 0;
-  transition: transform 200ms ease-in-out;
+  transition: transform 280ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 aside header {
   align-items: center;
-  border-bottom: 1px solid var(--color-dark);
+  border-bottom: 1px solid var(--color-border, #e7e5e4);
   display: flex;
   height: var(--header-height);
   justify-content: space-between;
-  padding: 0 20px;
+  padding: 0 1.25rem;
 }
 
 aside header h3 {
   margin: 0;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-muted, #78716c);
 }
 
 aside header .close {
@@ -126,7 +131,8 @@ aside header h2 {
 }
 
 aside main {
-  margin: 1rem;
+  margin: 0;
+  padding: 1rem 1.25rem 1.5rem;
 }
 
 aside p {
@@ -154,7 +160,7 @@ aside li {
 }
 
 .overlay {
-  background: rgba(0, 0, 0, 0.2);
+  background: oklch(0.2 0.02 265 / 0.45);
   bottom: 0;
   left: 0;
   opacity: 0;
@@ -162,10 +168,9 @@ aside li {
   position: fixed;
   right: 0;
   top: 0;
-  transition: opacity 400ms ease-in-out;
-  transition: opacity 400ms;
+  transition: opacity 300ms ease;
   visibility: hidden;
-  z-index: 10;
+  z-index: 50;
 }
 
 .overlay .close-outside {
@@ -227,13 +232,17 @@ button.reset:hover:not(:has(> *)) {
 */
 .header {
   align-items: center;
-  background: #fff;
+  background: color-mix(in oklch, var(--color-surface, #fff) 92%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--color-border, #e7e5e4);
   display: flex;
+  gap: 0.5rem;
   height: var(--header-height);
-  padding: 0 1rem;
+  padding: 0 clamp(1rem, 4vw, 2rem);
   position: sticky;
   top: 0;
-  z-index: 1;
+  z-index: 30;
 }
 
 .header-menu-mobile-toggle {
@@ -245,16 +254,27 @@ button.reset:hover:not(:has(> *)) {
 .header-menu-mobile {
   display: flex;
   flex-direction: column;
-  grid-gap: 1rem;
+  gap: 0.25rem;
+  padding: 0.5rem 0 1rem;
+}
+
+.header-menu-mobile .header-menu-item {
+  border-radius: var(--radius-md, 0.5rem);
+  padding: 0.625rem 0.75rem;
+}
+
+.header-menu-mobile .header-menu-item:hover {
+  background: var(--color-accent-subtle, #f5f5f4);
 }
 
 .header-menu-desktop {
   display: none;
-  grid-gap: 1rem;
+  align-items: center;
+  gap: 1.25rem;
   @media (min-width: 45em) {
     display: flex;
-    grid-gap: 1rem;
-    margin-left: 3rem;
+    margin-left: 2rem;
+    flex: 1;
   }
 }
 
@@ -279,7 +299,7 @@ button.reset:hover:not(:has(> *)) {
 * --------------------------------------------------
 */
 .footer {
-  background: var(--color-dark);
+  background: var(--color-foreground, #1c1917);
   margin-top: auto;
 }
 
@@ -287,13 +307,25 @@ button.reset:hover:not(:has(> *)) {
   justify-content: center;
   display: flex;
   flex-wrap: wrap;
-  grid-gap: 1rem;
-  padding: 1rem;
+  gap: 0.75rem 1.25rem;
+  padding: clamp(2rem, 5vw, 3rem) clamp(1rem, 4vw, 2rem);
+  max-width: 80rem;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .footer-menu a {
-  color: var(--color-light);
+  color: oklch(0.92 0.01 85);
+  font-size: 0.875rem;
   min-width: fit-content;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.footer-menu a:hover {
+  color: var(--color-light);
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
 
 /*
@@ -534,9 +566,6 @@ button.reset:hover:not(:has(> *)) {
 
 .product-options-item,
 .product-options-item:disabled {
-  padding: 0.25rem 0.5rem;
-  background-color: transparent;
-  font-size: 1rem;
   font-family: inherit;
 }
 
@@ -579,6 +608,17 @@ button.reset:hover:not(:has(> *)) {
 .article img {
   height: auto;
   width: 100%;
+}
+
+/*
+* --------------------------------------------------
+* Product description HTML (rich text from Shopify)
+* --------------------------------------------------
+*/
+.prose-product img {
+  height: auto;
+  max-width: 100%;
+  border-radius: var(--radius-md, 0.5rem);
 }
 
 /*
